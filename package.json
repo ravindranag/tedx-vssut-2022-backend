@@ -1,0 +1,24 @@
+{
+    "name": "tedxvssut-2022-backend",
+    "version": "1.0.0",
+    "description": "REST API for Tedx-VSSUT 2022 website",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon index.js"
+    },
+    "keywords": [
+        "rest",
+        "api",
+        "tedx",
+        "tedxvssut"
+    ],
+    "author": "Ravindra Nag",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.17.3",
+        "mongoose": "^6.2.7",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.15"
+    }
+}
