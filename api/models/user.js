@@ -1,35 +1,65 @@
 const mongoose = require('mongoose')
 
-const userSchema = new mongoose.Schema({
+const userSchema = mongoose.Schema({
     _id: mongoose.Types.ObjectId,
-    firstName: {
+    id: {
+        type: 'Number',
+        unique: true,
+        index: true,
+        required: true
+    },
+    first_name: {
         type: 'String',
         required: true,
     },
-    lastName: {
+    last_name: {
         type: 'String',
         required: true,
+    },
+    email: {
+        type: 'String',
+        required: true,
+        unique: true,
+        index: true
+    },
+    phone_no: {
+        type: 'Number',
+        required: true,
+        unique: true,
+        index: true
     },
     institute: {
         type: 'String',
         required: true,
     },
-    registrationNo: {
-        type: 'Number'
+    registration_no: {
+        type: 'Number',
+        default: null
     },
-    isRegistered: {
+    is_registered: {
         type: 'Boolean',
         default: false
+    },
+    payment_link: {
+        type: 'String',
+        default: null
+    },
+    payment_id: {
+        type: 'String',
+        default: null
     },
     ticket: {
         type: mongoose.Types.ObjectId,
         ref: 'Ticket',
         default: null
     },
-    tShirtSize: {
+    t_shirt_size: {
         type: 'String',
         required: true
     }
 })
 
-module.exports = mongoose.model('User', userSchema)
+const User = mongoose.model('User', userSchema)
+User.createIndexes()
+
+module.exports = User

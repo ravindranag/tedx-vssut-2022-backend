@@ -10,9 +10,11 @@ const ticketSchema = new mongoose.Schema({
     ticketId: {
         type: 'String'
     },
-    payment: {
-        type: mongoose.Types.Map
-    }
+    payment_link: {
+        type: mongoose.Types.ObjectId,
+        ref: 'PaymentLink'
+    },
+
 })
 
 module.exports = mongoose.model('Ticket', ticketSchema)

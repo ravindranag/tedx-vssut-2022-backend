@@ -1,18 +1,16 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
-
+const userRoutes = require('./api/routes/users')
+const paymentLinkRoutes = require('./api/routes/payment_links')
 mongoose.connect(process.env.MONGO_DB_URI)
 
 const app = express()
 
 app.use(morgan('dev'))
-
-app.use('/users', (req, res, next) => {
-    res.status(200).json({
-        message: 'Success'
-    })
-})
+app.use(express.json())
+app.use('/users', userRoutes)
+app.use('/payment_links', paymentLinkRoutes)
 
 app.use((req, res, next) => {
     const error = new Error('Endpoint doesn\'t exists')
