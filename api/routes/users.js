@@ -4,13 +4,8 @@ const User = require('../models/user')
 const router = express.Router()
 const Counter = require('../models/counter')
 const PaymentLink = require('../models/payment')
-const Razorpay = require('razorpay')
+const rzr = require('../razorpay/instance')
 const nodemailer = require('nodemailer')
-
-const rzr = new Razorpay({
-    key_id: process.env.key_id,
-    key_secret: process.env.key_secret
-})
 
 
 const transporter = nodemailer.createTransport({
@@ -113,92 +108,27 @@ router.post('/', (req, res, next) => {
         })
 })
 
-router.get('/pay', (req, res, next) => {
-    rzr.paymentLink.create({
-            "amount": 50000,
-            "currency": "INR",
-            "reference_id": "VSS8999",
-            "description": "Payment for policy no #23456",
-            "customer": {
-                "name": "Gaurav Kumar",
-                "contact": "+919999999999",
-                "email": "gaurav.kumar@example.com"
-            },
-            "notify": {
-                "sms": true,
-                "email": true
-            },
-            "reminder_enable": true,
-            "notes": {
-                "event_name": "TEDxVSSUT 2022"
-            },
-            "callback_url": "https://example-callback-url.com/",
-            "callback_method": "get"
+router.get('/status/:ref', (req, res) => {
+    const ref_id = req.params.ref
+    console.log(req.params)
+    User.findOne({
+            payment_reference_id: ref_id,
         })
-        .then(r => {
-            res.status(201).json({
-                id: r.id,
-                p: r
-            })
-        })
-        .catch(err => {
-            next(err)
-        })
-        // const result = {
-        //     message: 'your payment link'
-        // }
-        // res.status(200).json(result)
-})
-
-router.get('/generate-payment-link', (req, res) => {
-    const newUser = new User(req.body)
-    console.log(newUser)
-    const ref = 'VSS' + newUser.email.slice(-3)
-    console.log(ref)
-        // rzr.paymentLink.create({
-        //         "amount": 1000,
-        //         "currency": "INR",
-        //         "expire_by": 1691097057,
-        //         "reference_id": ref,
-        //         "description": "Payment for policy no #23456",
-        //         "customer": {
-        //             "name": newUser.first_name + ' ' + newUser.last_name,
-        //             "contact": newUser.phone_no,
-        //             "email": newUser.email
-        //         },
-        //         "notify": {
-        //             "sms": true,
-        //             "email": true
-        //         },
-        //         "reminder_enable": true,
-        //         "notes": {
-        //             "event_name": "TEDxVSSUT 2022"
-        //         },
-        //         "callback_url": "https://example-callback-url.com/",
-        //         "callback_method": "get"
-        //     })
-        //     .then(res => console.log(res))
-        //     .catch(err => {
-        //         next(err)
-        //     })
-    res.status(201).json({
-        message: 'received',
-        user: newUser
-    })
-})
-
-router.get('/pay/:id', (req, res) => {
-    const id = req.params.id
-    rzr.paymentLink.fetch(id)
-        .then(p => {
-            const result = {
-                id: id,
-                payment: p
+        .then(u => {
+            console.log(u)
+            if (u) {
+                res.status(200).json({
+                    message: 'user fetched',
+                    user: u
+                })
+            } else {
+                const err = new Error('User doesn\'t exist')
+                next(err)
             }
-            res.status(200).json(result)
         })
         .catch(err => {
-            res.status(500).json({ error: err })
+            console.log(err)
+            next(err)
         })
 })
 

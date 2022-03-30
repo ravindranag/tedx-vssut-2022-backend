@@ -4,6 +4,7 @@ const Payment = require('../models/payment')
 const User = require('../models/user')
 const Ticket = require('../models/ticket')
 const router = express.Router()
+const rzr = require('../razorpay/instance')
 
 
 router.get('/status', (req, res) => {
@@ -73,27 +74,8 @@ router.get('/status', (req, res) => {
     }
 })
 
-router.get('/:id', (req, res) => {
-    const id = req.params.id
-    PaymentLink.findById(id)
-        .then(doc => {
-            const result = {
-                status: 'ok',
-                status_code: 200,
-                payment_link: doc
-            }
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            const result = {
-                status: 'error',
-                status_code: 500,
-                message: err.message,
-                error: err
-            }
-            res.status(500).json(result)
-        })
-})
+
+
 
 // router.get('/create', (req, res) => {
 
