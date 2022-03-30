@@ -75,7 +75,7 @@ router.post('/', (req, res, next) => {
                     event_name: 'TEDxVSSUT 2022',
                     user_id: new_user._id
                 },
-                callback_url: 'https://api-tedxvssut.herokuapp.com/payments/',
+                callback_url: 'https://api-tedxvssut.herokuapp.com/payments/status/',
                 callback_method: 'get'
             })
         })
