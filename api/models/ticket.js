@@ -7,14 +7,9 @@ const ticketSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    ticketId: {
+    ticket_id: {
         type: 'String'
     },
-    payment_link: {
-        type: mongoose.Types.ObjectId,
-        ref: 'PaymentLink'
-    },
-
 })
 
 module.exports = mongoose.model('Ticket', ticketSchema)

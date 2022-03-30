@@ -22,4 +22,4 @@ const paymentLinkSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('PaymentLink', paymentLinkSchema)
+module.exports = mongoose.model('Payment', paymentLinkSchema)
