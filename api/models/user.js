@@ -48,6 +48,10 @@ const userSchema = mongoose.Schema({
         type: 'String',
         default: null
     },
+    payment_reference_id: {
+        type: 'String',
+        default: null
+    },
     ticket: {
         type: mongoose.Types.ObjectId,
         ref: 'Ticket',

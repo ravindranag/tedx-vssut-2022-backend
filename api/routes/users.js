@@ -3,7 +3,7 @@ const express = require('express')
 const User = require('../models/user')
 const router = express.Router()
 const Counter = require('../models/counter')
-const PaymentLink = require('../models/payment_link')
+const PaymentLink = require('../models/payment')
 const Razorpay = require('razorpay')
 const nodemailer = require('nodemailer')
 
@@ -47,36 +47,22 @@ router.post('/', (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         ...req.body
     })
-    Counter.updateOne({ name: 'userid' }, { $inc: { seq: 1 } }, { upsert: true })
-        .then(r => {
-            console.log(r)
-            return Counter.findOne({ name: 'userid' })
-        })
+    Counter.findOneAndUpdate({ name: 'userid' }, { $inc: { seq: 1 } }, { upsert: true, new: true })
         .then(doc => {
             console.log(doc)
             new_user.id = doc.seq
-            return new_user.save()
-        })
-        .then(user => {
-            // const result = {
-            //     status: 'created',
-            //     status_code: 201,
-            //     message: 'User created successfully',
-            //     user: user
-            // }
-            // res.status(result.status_code).json(result)
-            console.log('created user')
-            const ref = user.institute === 'Veer Surendra Sai University of Technology' ? 'VSS' + user.id : 'OUT' + user.id
+            const ref = new_user.institute === 'Veer Surendra Sai University of Technology' ? 'VSS' + new_user.id : 'OUT' + new_user.id
             console.log('ref', ref)
             return rzr.paymentLink.create({
                 amount: 50000,
                 currency: 'INR',
                 reference_id: ref,
                 description: 'Payment Link for Ticket no ' + ref,
+                expire_by: 1650047340,
                 customer: {
-                    name: user.first_name + ' ' + user.last_name,
-                    contact: user.phone_no.toString(),
-                    email: user.email
+                    name: new_user.first_name + ' ' + new_user.last_name,
+                    contact: new_user.phone_no.toString(),
+                    email: new_user.email
                 },
                 notify: {
                     sms: true,
@@ -85,44 +71,28 @@ router.post('/', (req, res, next) => {
                 reminder_enable: true,
                 notes: {
                     event_name: 'TEDxVSSUT 2022',
-                    user_id: user._id
+                    user_id: new_user._id
                 },
-                callback_url: 'https://tedxvssut.com/tickets',
+                callback_url: 'https://api-tedxvssut.herokuapp.com/payments/',
                 callback_method: 'get'
             })
         })
         .then(p => {
             console.log('payment link created')
-            const payment_link = new PaymentLink({
-                _id: new mongoose.Types.ObjectId(),
-                id: p.id,
-                user: p.notes.user_id,
-                payment_link: p
-            })
-
-            return payment_link.save()
-        })
-        .then(pl => {
-            console.log('payment link saved')
-            console.log(pl)
-            return User.findOneAndUpdate({
-                _id: pl.user
-            }, {
-                payment_link: pl.payment_link.get('short_url'),
-                payment_id: pl.id
-            }, {
-                new: true
-            })
+            new_user.payment_link = p.short_url
+            new_user.payment_id = p.id
+            new_user.payment_reference_id = p.reference_id
+            return new_user.save()
         })
         .then(user => {
             console.log('user updated')
-            transporter.sendMail({
-                from: '"Fred Foo 👻" <admin@ecellvssut.tech>', // sender address
-                to: `${user.email}`, // list of receivers
-                subject: "Payment Link Generated ✅", // Subject line
-                text: `payment link: ${user.payment_link}`, // plain text body
-                html: `<p>Payment link: ${user.payment_link}</p>`, // html body
-            })
+                // transporter.sendMail({
+                //     from: '"Fred Foo 👻" <admin@ecellvssut.tech>', // sender address
+                //     to: `${user.email}`, // list of receivers
+                //     subject: "Payment Link Generated ✅", // Subject line
+                //     text: `payment link: ${user.payment_link}`, // plain text body
+                //     html: `<p>Payment link: ${user.payment_link}</p>`, // html body
+                // })
             const result = {
                 status: 'created',
                 message: 'payment link generated for user',
@@ -145,7 +115,7 @@ router.get('/pay', (req, res, next) => {
     rzr.paymentLink.create({
             "amount": 50000,
             "currency": "INR",
-            "reference_id": "VSS89",
+            "reference_id": "VSS8999",
             "description": "Payment for policy no #23456",
             "customer": {
                 "name": "Gaurav Kumar",
