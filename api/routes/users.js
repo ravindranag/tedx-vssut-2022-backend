@@ -43,8 +43,10 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res, next) => {
+    const email = req.body.email
     let new_user = new User({
         _id: new mongoose.Types.ObjectId(),
+        username: req.body.email.slice(0, email.indexOf('@')),
         ...req.body
     })
     Counter.findOneAndUpdate({ name: 'userid' }, { $inc: { seq: 1 } }, { upsert: true, new: true })

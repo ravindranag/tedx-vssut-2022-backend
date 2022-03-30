@@ -22,6 +22,9 @@ const userSchema = mongoose.Schema({
         unique: true,
         index: true
     },
+    username: {
+        type: 'String'
+    },
     phone_no: {
         type: 'Number',
         required: true,
