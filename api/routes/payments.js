@@ -24,7 +24,7 @@ router.get('/status', (req, res) => {
                         name: doc[0].first_name + ' ' + doc[0].last_name,
                         username: doc[0].username
                     },
-                    ticket_id: doc.payment_reference_id
+                    ticket_id: doc[0].payment_reference_id
                 })
                 console.log('new ticket', new_ticket)
                 return new_ticket.save()
