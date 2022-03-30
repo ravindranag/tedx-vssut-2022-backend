@@ -98,13 +98,7 @@ router.post('/', (req, res, next) => {
             res.status(201).json(result)
         })
         .catch(err => {
-            console.log(err)
-            const result = {
-                status: 'failed',
-                status_code: 500,
-                message: err
-            }
-            res.status(result.status_code).json(result)
+            next(err)
         })
 })
 
