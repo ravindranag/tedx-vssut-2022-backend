@@ -55,6 +55,7 @@ router.get('/status', (req, res) => {
                 //         user: User.find({ _id: p.user })
                 //     })
                 // res.redirect(`https: //tedxvssut.com/ticket  `/status/?user=${p.user}`)
+                res.redirect('https://tedxvssut.com/tickets/confirm/?user=' + p.razorpay_payment_link_reference_id)
                 return User.findById(p.user)
             })
             .then(user => {
