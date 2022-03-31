@@ -54,8 +54,8 @@ router.get('/status', (req, res) => {
                 //         message: 'Success',
                 //         user: User.find({ _id: p.user })
                 //     })
-                // res.redirect(`https: //tedxvssut.com/ticket/status/?user=${p.user}`)
-                return User.find({ _id: p.user })
+                // res.redirect(`https: //tedxvssut.com/ticket  `/status/?user=${p.user}`)
+                return User.findById(p.user)
             })
             .then(user => {
                 res.status(200).json({

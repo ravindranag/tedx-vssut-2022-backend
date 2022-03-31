@@ -102,7 +102,7 @@ router.post('/', (req, res, next) => {
         })
 })
 
-router.get('/status/:ref', (req, res) => {
+router.get('/status/:ref', (req, res, next) => {
     const ref_id = req.params.ref
     console.log(req.params)
     User.findOne({
@@ -116,7 +116,7 @@ router.get('/status/:ref', (req, res) => {
                     user: u
                 })
             } else {
-                const err = new Error('User doesn\'t exist')
+                const err = new Error('User doesnt exist')
                 next(err)
             }
         })
